@@ -73,7 +73,29 @@
 
     <script src="js/paintings-data.js"></script>
     <script>
-        let currentQuestion = 0;
+        
+// Fisher-Yates 洗牌算法
+function shuffleArray(array) {
+    var shuffled = array.slice();
+    for (var i = shuffled.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = shuffled[i];
+        shuffled[i] = shuffled[j];
+        shuffled[j] = temp;
+    }
+    return shuffled;
+}
+
+// 获取随机化后的选项
+function getRandomizedOptions(painting) {
+    var options = painting.options.map(function(opt) {
+        return { text: opt, isCorrect: opt === painting.title };
+    });
+    return shuffleArray(options);
+}
+
+let currentQuestion = 0;
+        let selectedIsCorrect = false;
         let score = 0;
         let selectedOption = null;
 
@@ -141,38 +163,40 @@
 
         // 加载题目
         function loadQuestion() {
-            const painting = paintingsData[currentQuestion];
+            var quizCount = parseInt(localStorage.getItem('quizCount') || '23');
+            var painting = paintingsData[currentQuestion];
 
             // 更新进度
-            document.getElementById('progressText').textContent = `第 ${currentQuestion + 1} / ${paintingsData.length} 题`;
-            document.getElementById('progressScore').textContent = `得分: ${score}`;
+            document.getElementById('progressText').textContent = '第 ' + (currentQuestion + 1) + ' / ' + quizCount + ' 题';
+            document.getElementById('progressScore').textContent = '得分: ' + score;
 
             // 加载图片
-            document.getElementById('paintingImg').src = `assets/images/${painting.image}`;
+            document.getElementById('paintingImg').src = 'assets/images/' + painting.image;
 
-            // 生成选项
-            const optionsContainer = document.getElementById('optionsContainer');
+            // 生成随机化选项
+            var optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
+            var randomizedOptions = getRandomizedOptions(painting);
 
-            painting.options.forEach((option, index) => {
-                const label = document.createElement('label');
+            randomizedOptions.forEach(function(option, index) {
+                var label = document.createElement('label');
                 label.className = 'option-label';
-                label.innerHTML = `
-                    <span class="option-marker">${String.fromCharCode(65 + index)}</span>
-                    <input type="radio" name="answer" value="${option}" onchange="selectOption('${option}')">
-                    <span class="option-text">${option}</span>
-                `;
+                label.innerHTML = '<span class="option-marker">' + String.fromCharCode(65 + index) + '</span>' +
+                    '<input type="radio" name="answer" value="' + option.text + '" data-correct="' + option.isCorrect + '" onchange="selectOption(this.value, this.dataset.correct)">' +
+                    '<span class="option-text">' + option.text + '</span>';
                 optionsContainer.appendChild(label);
             });
 
             // 重置选择
             selectedOption = null;
+            selectedIsCorrect = false;
             document.getElementById('submitBtn').disabled = true;
         }
 
         // 选择选项
-        function selectOption(option) {
+        function selectOption(option, isCorrect) {
             selectedOption = option;
+            selectedIsCorrect = isCorrect === 'true';
             document.getElementById('submitBtn').disabled = false;
         }
 
@@ -181,7 +205,7 @@
             if (!selectedOption) return;
 
             const painting = paintingsData[currentQuestion];
-            const isCorrect = selectedOption === painting.title;
+            var isCorrect = selectedIsCorrect;
 
             if (isCorrect) {
                 score++;
@@ -200,8 +224,13 @@
                 localStorage.setItem('answeredQuestions', JSON.stringify(answeredQuestions));
             }
 
-            // 跳转到反馈页
-            window.location.href = 'feedback.html';
+            // 检查是否完成
+            var quizCount = parseInt(localStorage.getItem('quizCount') || '23');
+            if (currentQuestion + 1 >= quizCount) {
+                window.location.href = 'complete.html';
+            } else {
+                window.location.href = 'feedback.html';
+            }
         }
 
         // 显示答题卡

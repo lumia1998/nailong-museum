@@ -108,8 +108,14 @@ var AuthManager = (function() {
             hideModal();
             showSuccess('\u767b\u5f55\u6210\u529f\uff01');
         } catch (err) {
-            showError('\u767b\u5f55\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5');
             console.error('Login error:', err);
+            if (err.message && err.message.includes('fetch')) {
+                showError('网络错误，请检查网络连接');
+            } else if (err.message && err.message.includes('Invalid')) {
+                showError('邮箱或密码错误');
+            } else {
+                showError('登录失败: ' + (err.message || '请稍后再试'));
+            }
         } finally {
             setLoading(false);
         }
@@ -171,8 +177,12 @@ var AuthManager = (function() {
                 showSuccess('\u6ce8\u518c\u6210\u529f\uff01');
             }
         } catch (err) {
-            showError('\u6ce8\u518c\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5');
             console.error('Register error:', err);
+            if (err.message && err.message.includes('fetch')) {
+                showError('网络错误，请检查网络连接');
+            } else {
+                showError('注册失败: ' + (err.message || '请稍后再试'));
+            }
         } finally {
             setLoading(false);
         }
