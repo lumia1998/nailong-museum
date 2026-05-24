@@ -1291,3 +1291,13 @@ body:-moz-full-screen {
     background: rgba(255, 0, 0, 0.2);
     color: #FFB6C1;
 }
+
+/* 图片懒加载样式 */
+img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded {
+    opacity: 1;
+}

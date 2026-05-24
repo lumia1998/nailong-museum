@@ -213,3 +213,32 @@ const paintingsData = [
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = paintingsData;
 }
+
+
+// 图片懒加载初始化
+document.addEventListener('DOMContentLoaded', function() {
+    if ('loading' in HTMLImageElement.prototype) {
+        // 浏览器原生支持懒加载
+        const images = document.querySelectorAll('img[data-src]');
+        images.forEach(img => {
+            img.src = img.dataset.src;
+            img.loading = 'lazy';
+        });
+    } else {
+        // 回退到 Intersection Observer
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
+                }
+            });
+        });
+        
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+        });
+    }
+});
