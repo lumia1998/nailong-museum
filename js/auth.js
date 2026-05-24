@@ -92,15 +92,33 @@ var AuthManager = (function() {
         clearMessages();
 
         try {
-            var result = await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
+            // 10秒超时保护
+            var result = await Promise.race([
+                supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                }),
+                new Promise(function(_, reject) {
+                    setTimeout(function() { reject(new Error('TIMEOUT')); }, 10000);
+                })
+            ]);
 
             console.log('Login result:', result);
 
             if (result.error) {
-                showError(result.error.message || '登录失败');
+                var msg = result.error.message || '';
+                // 中文错误提示
+                if (msg.includes('Invalid login credentials')) {
+                    showError('邮箱或密码错误，或邮箱尚未验证');
+                } else if (msg.includes('Email not confirmed')) {
+                    showError('邮箱尚未验证，请先查收确认邮件');
+                } else if (msg.includes('Too many requests')) {
+                    showError('请求过于频繁，请稍后再试');
+                } else if (msg.includes('network')) {
+                    showError('网络错误，请检查网络连接');
+                } else {
+                    showError('登录失败: ' + msg);
+                }
                 return;
             }
 
@@ -115,10 +133,10 @@ var AuthManager = (function() {
             }
         } catch (err) {
             console.error('Login error:', err);
-            if (err.message && err.message.includes('fetch')) {
+            if (err.message === 'TIMEOUT') {
+                showError('登录超时，请检查网络后重试');
+            } else if (err.message && err.message.includes('fetch')) {
                 showError('网络错误，请检查网络连接');
-            } else if (err.message && err.message.includes('Invalid')) {
-                showError('邮箱或密码错误');
             } else {
                 showError('登录失败: ' + (err.message || '请稍后再试'));
             }
@@ -161,7 +179,14 @@ var AuthManager = (function() {
             console.log('Register result:', result);
 
             if (result.error) {
-                showError(result.error.message || '注册失败');
+                var msg = result.error.message || '';
+                if (msg.includes('already registered')) {
+                    showError('该邮箱已被注册');
+                } else if (msg.includes('password')) {
+                    showError('密码强度不够，至少6位');
+                } else {
+                    showError('注册失败: ' + msg);
+                }
                 return;
             }
 
