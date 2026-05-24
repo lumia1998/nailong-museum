@@ -293,56 +293,85 @@
 
         document.getElementById('originalTitle').addEventListener('input', validateSubmitForm);
 
-        async function submitArtwork() {
+        function submitArtwork() {
             var btn = document.getElementById('submitArtworkBtn');
             btn.disabled = true;
             btn.textContent = '上传中...';
 
-            try {
-                var user = authManager.currentUser;
-                if (!user) throw new Error('请先登录');
+            var user = authManager.currentUser;
+            if (!user) {
+                showSubmitMsg('请先登录', 'error');
+                btn.disabled = false;
+                btn.textContent = '提交投稿';
+                return;
+            }
 
-                var title = document.getElementById('originalTitle').value.trim();
-                var artist = document.getElementById('originalArtist').value.trim();
+            var title = document.getElementById('originalTitle').value.trim();
+            var artist = document.getElementById('originalArtist').value.trim();
 
-                if (!selectedFile) throw new Error('请选择图片');
-                if (!title) throw new Error('请填写原画名称');
+            if (!selectedFile) {
+                showSubmitMsg('请选择图片', 'error');
+                btn.disabled = false;
+                btn.textContent = '提交投稿';
+                return;
+            }
+            if (!title) {
+                showSubmitMsg('请填写原画名称', 'error');
+                btn.disabled = false;
+                btn.textContent = '提交投稿';
+                return;
+            }
 
-                // 上传图片到 Supabase Storage
-                var fileExt = selectedFile.name.split('.').pop();
-                var fileName = Date.now() + '_' + Math.random().toString(36).substr(2, 9) + '.' + fileExt;
-                var filePath = 'nailong/' + fileName;
+            var fileExt = selectedFile.name.split('.').pop();
+            var fileName = Date.now() + '_' + Math.random().toString(36).substr(2, 9) + '.' + fileExt;
+            var filePath = 'nailong/' + fileName;
 
-                var { data: uploadData, error: uploadError } = await supabaseClient
-                    .storage.from('paintings').upload(filePath, selectedFile);
+            // 设置超时
+            var timeoutId = setTimeout(function() {
+                showSubmitMsg('上传超时，请重试', 'error');
+                btn.disabled = false;
+                btn.textContent = '提交投稿';
+            }, 30000);
 
-                if (uploadError) {
-                    console.error('Storage upload error:', uploadError);
-                    throw new Error('图片上传失败: ' + (uploadError.message || '请检查Storage配置'));
+            // 上传图片
+            supabaseClient.storage.from('paintings').upload(filePath, selectedFile).then(function(uploadResult) {
+                if (uploadResult.error) {
+                    clearTimeout(timeoutId);
+                    console.error('Storage upload error:', uploadResult.error);
+                    showSubmitMsg('图片上传失败: ' + (uploadResult.error.message || '请检查Storage配置'), 'error');
+                    btn.disabled = false;
+                    btn.textContent = '提交投稿';
+                    return;
                 }
 
                 // 获取公开URL
-                var { data: urlData } = supabaseClient
-                    .storage.from('paintings').getPublicUrl(filePath);
-
-                if (!urlData || !urlData.publicUrl) {
-                    throw new Error('获取图片URL失败');
+                var urlResult = supabaseClient.storage.from('paintings').getPublicUrl(filePath);
+                if (!urlResult.data || !urlResult.data.publicUrl) {
+                    clearTimeout(timeoutId);
+                    showSubmitMsg('获取图片URL失败', 'error');
+                    btn.disabled = false;
+                    btn.textContent = '提交投稿';
+                    return;
                 }
 
-                // 保存投稿记录到数据库
-                var { data: dbData, error: dbError } = await supabaseClient
-                    .from('submissions')
-                    .insert({
-                        user_id: user.id,
-                        image_url: urlData.publicUrl,
-                        original_title: title,
-                        original_artist: artist || null,
-                        status: 'pending'
-                    });
+                var publicUrl = urlResult.data.publicUrl;
 
-                if (dbError) {
-                    console.error('DB insert error:', dbError);
-                    throw new Error('保存投稿记录失败: ' + (dbError.message || '请检查数据库配置'));
+                // 保存到数据库
+                return supabaseClient.from('submissions').insert({
+                    user_id: user.id,
+                    image_url: publicUrl,
+                    original_title: title,
+                    original_artist: artist || null,
+                    status: 'pending'
+                });
+            }).then(function(dbResult) {
+                clearTimeout(timeoutId);
+                if (dbResult && dbResult.error) {
+                    console.error('DB insert error:', dbResult.error);
+                    showSubmitMsg('保存投稿记录失败: ' + (dbResult.error.message || '请检查数据库配置'), 'error');
+                    btn.disabled = false;
+                    btn.textContent = '提交投稿';
+                    return;
                 }
 
                 showSubmitMsg('投稿成功！等待审核中...', 'success');
@@ -353,15 +382,13 @@
                 clearImage();
 
                 setTimeout(closeSubmissionModal, 2000);
-
-            } catch (error) {
+            }).catch(function(error) {
+                clearTimeout(timeoutId);
                 console.error('投稿失败:', error);
-                showSubmitMsg('投稿失败: ' + error.message, 'error');
-            } finally {
+                showSubmitMsg('投稿失败: ' + (error.message || '请重试'), 'error');
                 btn.disabled = false;
                 btn.textContent = '提交投稿';
-                validateSubmitForm();
-            }
+            });
         }
 
         function showSubmitMsg(text, type) {

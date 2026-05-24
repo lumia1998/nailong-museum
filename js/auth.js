@@ -1,4 +1,4 @@
-﻿// AuthManager - Supabase 认证管理模块
+// AuthManager - Supabase 认证管理模块（兼容夸克浏览器版本）
 var AuthManager = (function() {
     var currentUser = null;
     var currentUsername = null;
@@ -49,15 +49,15 @@ var AuthManager = (function() {
     // 显示加载状态
     function setLoading(loading) {
         var btns = document.querySelectorAll('.auth-submit-btn');
-        btns.forEach(function(btn) {
+        for (var i = 0; i < btns.length; i++) {
             if (loading) {
-                btn.disabled = true;
-                btn.classList.add('auth-loading');
+                btns[i].disabled = true;
+                btns[i].classList.add('auth-loading');
             } else {
-                btn.disabled = false;
-                btn.classList.remove('auth-loading');
+                btns[i].disabled = false;
+                btns[i].classList.remove('auth-loading');
             }
-        });
+        }
     }
 
     // 切换到登录表单
@@ -78,44 +78,41 @@ var AuthManager = (function() {
         clearMessages();
     }
 
-    // 处理登录
-    async function handleLogin() {
+    // 处理登录（使用 Promise 链式调用，兼容性更好）
+    function handleLogin() {
         var email = document.getElementById('login-email').value.trim();
         var password = document.getElementById('login-password').value;
 
         if (!email || !password) {
-            showError('\u8bf7\u586b\u5199\u90ae\u7bb1\u548c\u5bc6\u7801');
+            showError('请填写邮箱和密码');
             return;
         }
 
         setLoading(true);
         clearMessages();
 
-        try {
-            // 10秒超时保护
-            var result = await Promise.race([
-                supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                }),
-                new Promise(function(_, reject) {
-                    setTimeout(function() { reject(new Error('TIMEOUT')); }, 10000);
-                })
-            ]);
+        // 设置超时
+        var timeoutId = setTimeout(function() {
+            setLoading(false);
+            showError('登录超时，请检查网络后重试');
+        }, 15000);
 
+        supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        }).then(function(result) {
+            clearTimeout(timeoutId);
             console.log('Login result:', result);
 
             if (result.error) {
+                setLoading(false);
                 var msg = result.error.message || '';
-                // 中文错误提示
-                if (msg.includes('Invalid login credentials')) {
+                if (msg.indexOf('Invalid login credentials') !== -1) {
                     showError('邮箱或密码错误，或邮箱尚未验证');
-                } else if (msg.includes('Email not confirmed')) {
+                } else if (msg.indexOf('Email not confirmed') !== -1) {
                     showError('邮箱尚未验证，请先查收确认邮件');
-                } else if (msg.includes('Too many requests')) {
+                } else if (msg.indexOf('Too many requests') !== -1) {
                     showError('请求过于频繁，请稍后再试');
-                } else if (msg.includes('network')) {
-                    showError('网络错误，请检查网络连接');
                 } else {
                     showError('登录失败: ' + msg);
                 }
@@ -124,65 +121,76 @@ var AuthManager = (function() {
 
             if (result.data && result.data.user) {
                 currentUser = result.data.user;
-                await loadUsername();
-                updateUI();
-                hideModal();
-                showSuccess('\u767b\u5f55\u6210\u529f\uff01');
+                loadUsername().then(function() {
+                    setLoading(false);
+                    updateUI();
+                    hideModal();
+                    showSuccess('登录成功！');
+                }).catch(function() {
+                    setLoading(false);
+                    updateUI();
+                    hideModal();
+                    showSuccess('登录成功！');
+                });
             } else {
+                setLoading(false);
                 showError('登录失败，请重试');
             }
-        } catch (err) {
+        }).catch(function(err) {
+            clearTimeout(timeoutId);
+            setLoading(false);
             console.error('Login error:', err);
-            if (err.message === 'TIMEOUT') {
-                showError('登录超时，请检查网络后重试');
-            } else if (err.message && err.message.includes('fetch')) {
+            if (err.message && err.message.indexOf('fetch') !== -1) {
                 showError('网络错误，请检查网络连接');
             } else {
                 showError('登录失败: ' + (err.message || '请稍后再试'));
             }
-        } finally {
-            setLoading(false);
-        }
+        });
     }
 
     // 处理注册
-    async function handleRegister() {
+    function handleRegister() {
         var username = document.getElementById('register-username').value.trim();
         var email = document.getElementById('register-email').value.trim();
         var password = document.getElementById('register-password').value;
         var confirmPassword = document.getElementById('register-confirm-password').value;
 
         if (!username || !email || !password || !confirmPassword) {
-            showError('\u8bf7\u586b\u5199\u6240\u6709\u5b57\u6bb5');
+            showError('请填写所有字段');
             return;
         }
 
         if (password.length < 6) {
-            showError('\u5bc6\u7801\u81f3\u5c116\u4f4d');
+            showError('密码至少6位');
             return;
         }
 
         if (password !== confirmPassword) {
-            showError('\u4e24\u6b21\u5bc6\u7801\u4e0d\u4e00\u81f4');
+            showError('两次密码不一致');
             return;
         }
 
         setLoading(true);
         clearMessages();
 
-        try {
-            var result = await supabaseClient.auth.signUp({
-                email: email,
-                password: password
-            });
+        var timeoutId = setTimeout(function() {
+            setLoading(false);
+            showError('注册超时，请检查网络后重试');
+        }, 15000);
 
+        supabaseClient.auth.signUp({
+            email: email,
+            password: password
+        }).then(function(result) {
+            clearTimeout(timeoutId);
             console.log('Register result:', result);
 
             if (result.error) {
+                setLoading(false);
                 var msg = result.error.message || '';
-                if (msg.includes('already registered')) {
+                if (msg.indexOf('already registered') !== -1) {
                     showError('该邮箱已被注册');
-                } else if (msg.includes('password')) {
+                } else if (msg.indexOf('password') !== -1) {
                     showError('密码强度不够，至少6位');
                 } else {
                     showError('注册失败: ' + msg);
@@ -192,82 +200,99 @@ var AuthManager = (function() {
 
             var user = result.data && result.data.user;
             if (user) {
-                // 保存用户名到 profiles 表
-                var profileResult = await supabaseClient.from('profiles').insert({
+                supabaseClient.from('profiles').insert({
                     id: user.id,
                     username: username
+                }).then(function(profileResult) {
+                    if (profileResult.error) {
+                        console.error('Profile save error:', profileResult.error);
+                    }
+                    currentUser = user;
+                    currentUsername = username;
+                    setLoading(false);
+                    updateUI();
+                    hideModal();
+                    showSuccess('注册成功！');
+                }).catch(function(err) {
+                    console.error('Profile save error:', err);
+                    currentUser = user;
+                    currentUsername = username;
+                    setLoading(false);
+                    updateUI();
+                    hideModal();
+                    showSuccess('注册成功！');
                 });
-
-                if (profileResult.error) {
-                    console.error('Profile save error:', profileResult.error);
-                    // 注册成功但 profile 保存失败，仍然继续
-                }
-
-                currentUser = user;
-                currentUsername = username;
-                updateUI();
-                hideModal();
-                showSuccess('\u6ce8\u518c\u6210\u529f\uff01');
             } else {
+                setLoading(false);
                 showError('注册失败，请重试');
             }
-        } catch (err) {
+        }).catch(function(err) {
+            clearTimeout(timeoutId);
+            setLoading(false);
             console.error('Register error:', err);
-            if (err.message && err.message.includes('fetch')) {
+            if (err.message && err.message.indexOf('fetch') !== -1) {
                 showError('网络错误，请检查网络连接');
             } else {
                 showError('注册失败: ' + (err.message || '请稍后再试'));
             }
-        } finally {
-            setLoading(false);
-        }
+        });
     }
 
     // 处理退出登录
-    async function handleLogout() {
-        try {
-            await supabaseClient.auth.signOut();
+    function handleLogout() {
+        supabaseClient.auth.signOut().then(function() {
             currentUser = null;
             currentUsername = null;
             updateUI();
-        } catch (err) {
+        }).catch(function(err) {
             console.error('Logout error:', err);
-        }
+        });
     }
 
     // 加载用户名
-    async function loadUsername() {
-        if (!currentUser) return;
-        try {
-            var result = await supabaseClient.from('profiles')
+    function loadUsername() {
+        return new Promise(function(resolve, reject) {
+            if (!currentUser) {
+                resolve();
+                return;
+            }
+            supabaseClient.from('profiles')
                 .select('username')
                 .eq('id', currentUser.id)
-                .single();
-
-            if (result.data && result.data.username) {
-                currentUsername = result.data.username;
-            } else {
-                currentUsername = currentUser.email.split('@')[0];
-            }
-        } catch (err) {
-            currentUsername = currentUser.email.split('@')[0];
-            console.error('Load username error:', err);
-        }
+                .single()
+                .then(function(result) {
+                    if (result.data && result.data.username) {
+                        currentUsername = result.data.username;
+                    } else {
+                        currentUsername = currentUser.email.split('@')[0];
+                    }
+                    resolve();
+                })
+                .catch(function(err) {
+                    currentUsername = currentUser.email.split('@')[0];
+                    console.error('Load username error:', err);
+                    resolve();
+                });
+        });
     }
 
     // 检查会话状态
-    async function checkSession() {
-        try {
-            var result = await supabaseClient.auth.getSession();
+    function checkSession() {
+        supabaseClient.auth.getSession().then(function(result) {
             if (result.data && result.data.session) {
                 currentUser = result.data.session.user;
-                await loadUsername();
+                loadUsername().then(function() {
+                    updateUI();
+                }).catch(function() {
+                    updateUI();
+                });
+            } else {
+                updateUI();
             }
-            updateUI();
-        } catch (err) {
+        }).catch(function(err) {
             console.error('Check session error:', err);
             updateUI();
-        }
+        });
     }
 
     // 更新UI显示
@@ -288,23 +313,8 @@ var AuthManager = (function() {
 
     // 初始化事件绑定
     function init() {
-        // 登录按钮
-        var headerLoginBtn = document.getElementById('header-login-btn');
-        if (headerLoginBtn) {
-            headerLoginBtn.addEventListener('click', function() {
-                showModal();
-            });
-        }
+        console.log('AuthManager init...');
 
-        // 退出按钮
-        var logoutBtn = document.getElementById('logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', function() {
-                handleLogout();
-            });
-        }
-
-        // 关闭弹窗
         var closeBtn = document.querySelector('.auth-close');
         if (closeBtn) {
             closeBtn.addEventListener('click', function() {
@@ -312,7 +322,6 @@ var AuthManager = (function() {
             });
         }
 
-        // 点击遮罩关闭
         var modal = document.getElementById('auth-modal');
         if (modal) {
             modal.addEventListener('click', function(e) {
@@ -322,7 +331,6 @@ var AuthManager = (function() {
             });
         }
 
-        // 切换到注册
         var switchToRegister = document.getElementById('switch-to-register');
         if (switchToRegister) {
             switchToRegister.addEventListener('click', function(e) {
@@ -331,7 +339,6 @@ var AuthManager = (function() {
             });
         }
 
-        // 切换到登录
         var switchToLogin = document.getElementById('switch-to-login');
         if (switchToLogin) {
             switchToLogin.addEventListener('click', function(e) {
@@ -340,7 +347,6 @@ var AuthManager = (function() {
             });
         }
 
-        // 登录提交
         var loginSubmit = document.getElementById('login-submit');
         if (loginSubmit) {
             loginSubmit.addEventListener('click', function(e) {
@@ -349,7 +355,6 @@ var AuthManager = (function() {
             });
         }
 
-        // 注册提交
         var registerSubmit = document.getElementById('register-submit');
         if (registerSubmit) {
             registerSubmit.addEventListener('click', function(e) {
@@ -358,52 +363,62 @@ var AuthManager = (function() {
             });
         }
 
-        // 回车提交
-        var loginForm = document.getElementById('login-form');
-        if (loginForm) {
-            loginForm.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
+        var loginEmail = document.getElementById('login-email');
+        var loginPassword = document.getElementById('login-password');
+        if (loginEmail) {
+            loginEmail.addEventListener('keydown', function(e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    handleLogin();
+                }
+            });
+        }
+        if (loginPassword) {
+            loginPassword.addEventListener('keydown', function(e) {
+                if (e.keyCode === 13) {
                     e.preventDefault();
                     handleLogin();
                 }
             });
         }
 
-        var registerForm = document.getElementById('register-form');
-        if (registerForm) {
-            registerForm.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
+        var registerInputs = document.querySelectorAll('#register-form input');
+        for (var i = 0; i < registerInputs.length; i++) {
+            registerInputs[i].addEventListener('keydown', function(e) {
+                if (e.keyCode === 13) {
                     e.preventDefault();
                     handleRegister();
                 }
             });
         }
 
-        // 监听认证状态变化
-        supabaseClient.auth.onAuthStateChange(async function(event, session) {
-            if (event === 'SIGNED_IN' && session) {
-                currentUser = session.user;
-                await loadUsername();
-                updateUI();
-            } else if (event === 'SIGNED_OUT') {
-                currentUser = null;
-                currentUsername = null;
-                updateUI();
-            }
-        });
+        try {
+            supabaseClient.auth.onAuthStateChange(function(event, session) {
+                if (event === 'SIGNED_IN' && session) {
+                    currentUser = session.user;
+                    loadUsername().then(function() {
+                        updateUI();
+                    });
+                } else if (event === 'SIGNED_OUT') {
+                    currentUser = null;
+                    currentUsername = null;
+                    updateUI();
+                }
+            });
+        } catch (e) {
+            console.error('onAuthStateChange error:', e);
+        }
 
-        // 检查已有会话
         checkSession();
+        console.log('AuthManager init done');
     }
 
-    // 页面加载完成后初始化
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
 
-    // 返回公共接口
     return {
         showModal: showModal,
         hideModal: hideModal,
