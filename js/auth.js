@@ -92,21 +92,27 @@ var AuthManager = (function() {
         clearMessages();
 
         try {
-            var data = await supabaseClient.auth.signInWithPassword({
+            var result = await supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password
             });
 
-            if (data.error) {
-                showError(data.error.message);
+            console.log('Login result:', result);
+
+            if (result.error) {
+                showError(result.error.message || '登录失败');
                 return;
             }
 
-            currentUser = data.data.user;
-            await loadUsername();
-            updateUI();
-            hideModal();
-            showSuccess('\u767b\u5f55\u6210\u529f\uff01');
+            if (result.data && result.data.user) {
+                currentUser = result.data.user;
+                await loadUsername();
+                updateUI();
+                hideModal();
+                showSuccess('\u767b\u5f55\u6210\u529f\uff01');
+            } else {
+                showError('登录失败，请重试');
+            }
         } catch (err) {
             console.error('Login error:', err);
             if (err.message && err.message.includes('fetch')) {
@@ -147,26 +153,28 @@ var AuthManager = (function() {
         clearMessages();
 
         try {
-            var data = await supabaseClient.auth.signUp({
+            var result = await supabaseClient.auth.signUp({
                 email: email,
                 password: password
             });
 
-            if (data.error) {
-                showError(data.error.message);
+            console.log('Register result:', result);
+
+            if (result.error) {
+                showError(result.error.message || '注册失败');
                 return;
             }
 
-            var user = data.data.user;
+            var user = result.data && result.data.user;
             if (user) {
                 // 保存用户名到 profiles 表
-                var profileData = await supabaseClient.from('profiles').insert({
+                var profileResult = await supabaseClient.from('profiles').insert({
                     id: user.id,
                     username: username
                 });
 
-                if (profileData.error) {
-                    console.error('Profile save error:', profileData.error);
+                if (profileResult.error) {
+                    console.error('Profile save error:', profileResult.error);
                     // 注册成功但 profile 保存失败，仍然继续
                 }
 
@@ -175,6 +183,8 @@ var AuthManager = (function() {
                 updateUI();
                 hideModal();
                 showSuccess('\u6ce8\u518c\u6210\u529f\uff01');
+            } else {
+                showError('注册失败，请重试');
             }
         } catch (err) {
             console.error('Register error:', err);
@@ -204,13 +214,13 @@ var AuthManager = (function() {
     async function loadUsername() {
         if (!currentUser) return;
         try {
-            var data = await supabaseClient.from('profiles')
+            var result = await supabaseClient.from('profiles')
                 .select('username')
                 .eq('id', currentUser.id)
                 .single();
 
-            if (data.data && data.data.username) {
-                currentUsername = data.data.username;
+            if (result.data && result.data.username) {
+                currentUsername = result.data.username;
             } else {
                 currentUsername = currentUser.email.split('@')[0];
             }
@@ -223,9 +233,9 @@ var AuthManager = (function() {
     // 检查会话状态
     async function checkSession() {
         try {
-            var data = await supabaseClient.auth.getSession();
-            if (data.data && data.data.session) {
-                currentUser = data.data.session.user;
+            var result = await supabaseClient.auth.getSession();
+            if (result.data && result.data.session) {
+                currentUser = result.data.session.user;
                 await loadUsername();
             }
             updateUI();
