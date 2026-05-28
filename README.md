@@ -2,7 +2,7 @@
 
 一个趣味艺术鉴赏互动网站，通过奶龙改编的世界名画，让用户在轻松有趣的氛围中猜测原画名称。
 
-🔗 **在线体验**: https://nwviewerli.cn
+🔗 **在线体验**: https://lumia1998.github.io/nailong-museum/
 
 ## 这是什么？
 
