@@ -33,21 +33,15 @@
 
     <main class="container">
         <div class="complete-container">
-            <div class="pass-video">
-                <video id="passVideo" autoplay playsinline muted>
-                    <source src="assets/videos/pass.mp4" type="video/mp4">
-                </video>
-            </div>
-
-            <h1 class="final-message" id="finalMessage" style="display: none;">
+            <h1 class="final-message" id="finalMessage">
                 可我觉得很神圣啊！
             </h1>
 
-            <p class="final-quote" id="finalQuote" style="display: none;">
+            <p class="final-quote" id="finalQuote">
                 —— 奶龙
             </p>
 
-            <div class="result-summary" id="resultSummary" style="display: none;">
+            <div class="result-summary" id="resultSummary">
                 <div class="result-rate">
                     <span class="result-rate-number" id="accuracyText">0%</span>
                     <span class="result-rate-label">正确率</span>
@@ -68,7 +62,7 @@
                 </div>
             </div>
 
-            <button class="restart-btn" id="restartBtn" onclick="restartQuiz()" style="display: none;">
+            <button class="restart-btn" id="restartBtn" onclick="restartQuiz()">
                 再来一次
             </button>
         </div>
@@ -78,19 +72,7 @@
     <script>
         // 初始化
         function init() {
-            const video = document.getElementById('passVideo');
             renderResultStats();
-
-            // 视频播放结束后显示文字
-            video.onended = function() {
-                showFinalMessage();
-            };
-
-            // 如果视频加载失败，直接显示文字
-            video.onerror = function() {
-                showFinalMessage();
-            };
-
             initAudio();
         }
 
@@ -134,20 +116,6 @@
                 document.exitFullscreen();
                 localStorage.removeItem('wasFullscreen');
             }
-        }
-
-        // 显示最终文字
-        function showFinalMessage() {
-            document.getElementById('finalMessage').style.display = 'block';
-            document.getElementById('finalQuote').style.display = 'block';
-            document.getElementById('resultSummary').style.display = 'block';
-            document.getElementById('restartBtn').style.display = 'inline-block';
-
-            // 添加淡入动画
-            setTimeout(() => {
-                document.getElementById('finalMessage').style.opacity = '1';
-                document.getElementById('resultSummary').style.opacity = '1';
-            }, 100);
         }
 
         // 渲染本次挑战统计

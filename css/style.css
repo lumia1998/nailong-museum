@@ -592,6 +592,10 @@ body:-moz-full-screen {
     box-shadow: 
         0 10px 40px rgba(0, 0, 0, 0.5),
         inset 0 0 20px rgba(201, 162, 39, 0.1);
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .painting-frame::before {
@@ -609,11 +613,37 @@ body:-moz-full-screen {
 .painting-img {
     width: 100%;
     max-height: 400px;
+    min-height: 220px;
     object-fit: contain;
     display: block;
     background: #000;
     /* 使用 clip-path 去除四角水印 */
     clip-path: inset(3% 3% 3% 3%);
+}
+
+.painting-img.is-loading,
+.painting-img.has-error {
+    visibility: hidden;
+}
+
+.painting-status {
+    position: absolute;
+    inset: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--antique-gold);
+    background: rgba(0, 0, 0, 0.28);
+    font-size: 1rem;
+    z-index: 1;
+}
+
+.painting-status[hidden] {
+    display: none;
+}
+
+.painting-error {
+    color: #FFB6C1;
 }
 
 .question-text {
@@ -800,6 +830,8 @@ body:-moz-full-screen {
 .complete-container {
     text-align: center;
     animation: fadeIn 1s ease-out;
+    width: 100%;
+    max-width: 620px;
 }
 
 .pass-video {
@@ -818,8 +850,6 @@ body:-moz-full-screen {
     text-shadow: 0 0 30px rgba(255, 217, 61, 0.5);
     margin-bottom: 1rem;
     animation: glow 2s ease-in-out infinite;
-    opacity: 0;
-    transition: opacity 1s ease;
 }
 
 @keyframes glow {
@@ -841,8 +871,6 @@ body:-moz-full-screen {
     border-radius: 10px;
     background: rgba(26, 26, 46, 0.72);
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.32);
-    opacity: 0;
-    transition: opacity 0.8s ease;
 }
 
 .result-rate {
@@ -937,6 +965,14 @@ body:-moz-full-screen {
     
     .final-message {
         font-size: 1.8rem;
+    }
+
+    .painting-frame {
+        min-height: 220px;
+    }
+
+    .painting-img {
+        min-height: 180px;
     }
 
     .result-summary {

@@ -48,6 +48,8 @@
 
             <div class="painting-frame">
                 <img src="" alt="奶龙改编名画" class="painting-img" id="paintingImg">
+                <div class="painting-status" id="paintingLoading">图片加载中...</div>
+                <div class="painting-status painting-error" id="paintingError" hidden>图片暂时无法显示</div>
             </div>
 
             <h2 class="question-text">这幅画改编自哪幅世界名画？</h2>
@@ -172,7 +174,25 @@ let currentQuestion = 0;
             document.getElementById('progressScore').textContent = '得分: ' + score;
 
             // 加载图片
-            document.getElementById('paintingImg').src = 'assets/images/' + painting.image;
+            var paintingImg = document.getElementById('paintingImg');
+            var paintingLoading = document.getElementById('paintingLoading');
+            var paintingError = document.getElementById('paintingError');
+            paintingImg.classList.add('is-loading');
+            paintingImg.classList.remove('has-error');
+            paintingLoading.hidden = false;
+            paintingError.hidden = true;
+
+            paintingImg.onload = function() {
+                paintingImg.classList.remove('is-loading');
+                paintingLoading.hidden = true;
+            };
+            paintingImg.onerror = function() {
+                paintingImg.classList.add('has-error');
+                paintingImg.classList.remove('is-loading');
+                paintingLoading.hidden = true;
+                paintingError.hidden = false;
+            };
+            paintingImg.src = 'assets/images/' + painting.image;
 
             // 生成随机化选项
             var optionsContainer = document.getElementById('optionsContainer');
