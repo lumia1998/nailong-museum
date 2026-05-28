@@ -35,7 +35,6 @@ jobs:
           rsync -av \
             --exclude='.git' \
             --exclude='.github' \
-            --exclude='CNAME' \
             --exclude='site.zip' \
             ./ _site/
           touch _site/.nojekyll

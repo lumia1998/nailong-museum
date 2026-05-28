@@ -1,4 +1,4 @@
-// 23幅名画题目数据
+// 20幅名画题目数据
 const paintingsData = [
     {
         id: 1,
@@ -92,16 +92,6 @@ const paintingsData = [
     },
     {
         id: 10,
-        image: "art2_005.jpg",
-        originalImage: "original_accolade.jpg",
-        title: "《受封》",
-        artist: "埃德蒙·布莱尔·莱顿",
-        year: "1901",
-        options: ["《受封》", "《亚瑟王传奇》", "《圣女贞德》", "《圆桌骑士》"],
-        explanation: "又是这幅画！看来奶龙很喜欢当骑士呢。这次能答对吗？"
-    },
-    {
-        id: 11,
         image: "art2_004.jpg",
         originalImage: "original_gleaners.jpg",
         title: "《拾穗者》",
@@ -111,7 +101,7 @@ const paintingsData = [
         explanation: "巴比松画派米勒的代表作，描绘农民在田间拾麦穗的场景。奶龙也要辛勤劳动呀！"
     },
     {
-        id: 12,
+        id: 11,
         image: "art2_007.jpg",
         originalImage: "original_starry_night.jpg",
         title: "《星月夜》",
@@ -121,7 +111,7 @@ const paintingsData = [
         explanation: "梵高在圣雷米精神病院期间创作的杰作，旋转的星空充满动感。奶龙在星空下，会不会也跟着转起来？"
     },
     {
-        id: 13,
+        id: 12,
         image: "art2_008.jpg",
         originalImage: "original_scream.jpg",
         title: "《呐喊》",
@@ -131,7 +121,7 @@ const paintingsData = [
         explanation: "表现主义大师蒙克的标志性作品，那个捂脸尖叫的形象深入人心。奶龙呐喊：我饿了！"
     },
     {
-        id: 14,
+        id: 13,
         image: "art3_001.jpg",
         originalImage: "original_paradise_lost.jpg",
         title: "《失乐园》",
@@ -141,7 +131,7 @@ const paintingsData = [
         explanation: "多雷为弥尔顿《失乐园》创作的插图，描绘天使长米迦勒驱逐亚当夏娃。奶龙天使，画风突变！"
     },
     {
-        id: 15,
+        id: 14,
         image: "art3_002.jpg",
         originalImage: "original_baptism_christ.jpg",
         title: "《基督受洗》",
@@ -151,27 +141,7 @@ const paintingsData = [
         explanation: "韦罗基奥工作室的作品，据说左边的天使是年轻的达芬奇画的。奶龙天使，也是大师之作！"
     },
     {
-        id: 16,
-        image: "art3_003.jpg",
-        originalImage: "original_scream.jpg",
-        title: "《呐喊》",
-        artist: "蒙克",
-        year: "1893",
-        options: ["《呐喊》", "《生命之舞》", "《病孩》", "《卡尔·约翰街的夜晚》"],
-        explanation: "又是《呐喊》！看来奶龙真的很喜欢这幅画。这次答对了吗？"
-    },
-    {
-        id: 17,
-        image: "art3_005.jpg",
-        originalImage: "original_accolade.jpg",
-        title: "《受封》",
-        artist: "埃德蒙·布莱尔·莱顿",
-        year: "1901",
-        options: ["《受封》", "《亚瑟王传奇》", "《圣女贞德》", "《圆桌骑士》"],
-        explanation: "第三次出现《受封》！奶龙是多想当骑士啊。这次一定不会错了吧？"
-    },
-    {
-        id: 18,
+        id: 15,
         image: "art4_001.jpg",
         originalImage: "original_kiss_judas.jpg",
         title: "《犹大之吻》",
@@ -181,7 +151,7 @@ const paintingsData = [
         explanation: "文艺复兴先驱乔托的代表作，描绘犹大出卖耶稣的背叛之吻。奶龙版：这是友好的亲亲！"
     },
     {
-        id: 19,
+        id: 16,
         image: "art4_002.jpg",
         originalImage: "original_madonna_harpies.jpg",
         title: "《哈勒姆的圣母》",
@@ -191,7 +161,7 @@ const paintingsData = [
         explanation: "文艺复兴时期萨尔托的圣母像，充满温情与神圣。奶龙圣母，保佑大家天天开心！"
     },
     {
-        id: 20,
+        id: 17,
         image: "art4_005.jpg",
         originalImage: "original_swing.jpg",
         title: "《秋千》",
@@ -201,7 +171,7 @@ const paintingsData = [
         explanation: "洛可可风格代表，描绘贵族少女荡秋千的浪漫场景。奶龙荡秋千，裙子飞起来啦！"
     },
     {
-        id: 21,
+        id: 18,
         image: "art4_006.jpg",
         originalImage: "original_arnolfini.jpg",
         title: "《阿尔诺芬尼夫妇像》",
@@ -211,7 +181,7 @@ const paintingsData = [
         explanation: "北方文艺复兴杰作，细节丰富到令人发指。奶龙夫妇，百年好合！"
     },
     {
-        id: 22,
+        id: 19,
         image: "art4_007.jpg",
         originalImage: "original_dr_gachet.jpg",
         title: "《加歇医生像》",
@@ -221,7 +191,7 @@ const paintingsData = [
         explanation: "梵高为治疗他的加歇医生画的肖像，忧郁的蓝色调。奶龙医生：你病得不轻啊！"
     },
     {
-        id: 23,
+        id: 20,
         image: "art4_008.jpg",
         originalImage: "original_boating_party.jpg",
         title: "《船上的午宴》",

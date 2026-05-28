@@ -1,7 +1,7 @@
 # 奶龙美术馆 - GitHub Pages 免费部署指南
 
 ## 免费域名
-部署后自动获得: `https://你的用户名.github.io/fridrich-of-ntu`
+部署后自动获得: `https://lumia1998.github.io/nailong-museum`
 
 ---
 
@@ -10,7 +10,7 @@
 ### 第一步：创建 GitHub 仓库
 
 1. 访问 https://github.com/new
-2. 仓库名称: `fridrich-of-ntu`
+2. 仓库名称: `nailong-museum`
 3. 选择 **Public**
 4. 点击 **Create repository**
 
@@ -19,20 +19,20 @@
 打开新的 CMD 或 PowerShell:
 
 ```bash
-cd e:\黑客松\fridrich-of-ntu-integrated
+cd F:\Lumia\Desktop\work\nailong-museum
 git init
 git add .
 git commit -m "Initial commit: 奶龙美术馆"
 git branch -M main
-git remote add origin https://github.com/你的用户名/fridrich-of-ntu.git
+git remote add origin https://github.com/lumia1998/nailong-museum.git
 git push -u origin main
 ```
 
-> 将 `你的用户名` 替换为你的GitHub用户名
+> 当前仓库地址为 `https://github.com/lumia1998/nailong-museum`。
 
 ### 第三步：开启 GitHub Pages
 
-1. 打开仓库页面: `https://github.com/你的用户名/fridrich-of-ntu`
+1. 打开仓库页面: `https://github.com/lumia1998/nailong-museum`
 2. 点击 **Settings** → **Pages**（左侧菜单）
 3. Source 选择 **Deploy from a branch**
 4. Branch 选择 **main**，文件夹选 **/ (root)**
@@ -42,7 +42,7 @@ git push -u origin main
 
 等待1-2分钟，然后访问:
 ```
-https://你的用户名.github.io/fridrich-of-ntu
+https://lumia1998.github.io/nailong-museum
 ```
 
 ---
@@ -52,7 +52,7 @@ https://你的用户名.github.io/fridrich-of-ntu
 修改代码后，在本地执行:
 
 ```bash
-cd e:\黑客松\fridrich-of-ntu-integrated
+cd F:\Lumia\Desktop\work\nailong-museum
 git add .
 git commit -m "更新描述"
 git push origin main

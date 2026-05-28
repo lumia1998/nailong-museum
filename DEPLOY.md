@@ -1,9 +1,9 @@
 # 奶龙美术馆 - GitHub Pages 部署指南
 
 ## 域名信息
-- **域名**: fridrichntunailong.com
+- **域名**: nwviewerli.cn
 - **托管**: GitHub Pages
-- **项目**: fridrich-of-ntu-integrated
+- **项目**: nailong-museum
 
 ---
 
@@ -11,13 +11,13 @@
 
 ### 第一步：购买域名
 1. 访问 https://wanwang.aliyun.com 或 https://dnspod.cloud.tencent.com
-2. 搜索并购买域名: `fridrichntunailong.com`
+2. 搜索并购买域名: `nwviewerli.cn`
 3. 完成实名认证（国内注册商需要）
 
 ### 第二步：创建GitHub仓库
 1. 登录 https://github.com
 2. 点击右上角 **+** → **New repository**
-3. 仓库名称: `fridrich-of-ntu-integrated`
+3. 仓库名称: `nailong-museum`
 4. 选择 **Public**
 5. 点击 **Create repository**
 
@@ -26,16 +26,16 @@
 打开新的CMD或PowerShell窗口，执行:
 
 ```bash
-cd e:\黑客松\fridrich-of-ntu-integrated
+cd F:\Lumia\Desktop\work\nailong-museum
 git init
 git add .
 git commit -m "Initial commit: 奶龙美术馆"
 git branch -M main
-git remote add origin https://github.com/你的用户名/fridrich-of-ntu-integrated.git
+git remote add origin https://github.com/lumia1998/nailong-museum.git
 git push -u origin main
 ```
 
-> 将 `你的用户名` 替换为你的GitHub用户名
+> 当前仓库地址为 `https://github.com/lumia1998/nailong-museum`。
 
 ### 第四步：开启GitHub Pages
 1. 打开仓库页面
@@ -46,14 +46,14 @@ git push -u origin main
 
 等待1-2分钟，网站将部署到:
 ```
-https://你的用户名.github.io/fridrich-of-ntu-integrated/
+https://lumia1998.github.io/nailong-museum/
 ```
 
 ### 第五步：绑定自定义域名
 
 #### 5.1 在GitHub配置域名
 1. 在仓库 Settings → Pages → Custom domain
-2. 填入: `fridrichntunailong.com`
+2. 填入: `nwviewerli.cn`
 3. 点击 **Save**
 4. 勾选 **Enforce HTTPS**（等待证书生成，约5分钟）
 
@@ -66,7 +66,7 @@ https://你的用户名.github.io/fridrich-of-ntu-integrated/
 | @ | A | 185.199.109.153 |
 | @ | A | 185.199.110.153 |
 | @ | A | 185.199.111.153 |
-| www | CNAME | 你的用户名.github.io |
+| www | CNAME | lumia1998.github.io |
 
 **或腾讯云DNS配置:**
 相同配置，在DNSPod中添加以上记录
@@ -75,7 +75,7 @@ https://你的用户名.github.io/fridrich-of-ntu-integrated/
 
 等待DNS生效（通常10分钟-24小时），然后访问:
 ```
-https://fridrichntunailong.com
+https://nwviewerli.cn
 ```
 
 ---
@@ -87,7 +87,7 @@ https://fridrichntunailong.com
 | `CNAME` | GitHub Pages自定义域名配置文件 |
 | `index.html` | 网站主页面（单页面应用） |
 | `css/style.css` | 样式文件 |
-| `js/paintings-data.js` | 23幅名画数据 |
+| `js/paintings-data.js` | 20幅名画数据 |
 | `assets/images/` | 图片资源 |
 | `assets/videos/` | 视频资源 |
 
@@ -114,7 +114,7 @@ A: 检查视频文件是否已推送到GitHub，文件名是否正确
 如果修改了代码，重新部署:
 
 ```bash
-cd e:\黑客松\fridrich-of-ntu-integrated
+cd F:\Lumia\Desktop\work\nailong-museum
 git add .
 git commit -m "更新描述"
 git push origin main

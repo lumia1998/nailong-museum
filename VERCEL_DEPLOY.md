@@ -1,7 +1,7 @@
 # 奶龙美术馆 - Vercel 免费部署指南
 
 ## 免费域名
-部署后自动获得: `https://fridrich-of-ntu.vercel.app`
+部署后自动获得: `https://nailong-museum.vercel.app`
 
 ---
 
@@ -19,7 +19,7 @@
 ### 第二步：创建 GitHub 仓库
 
 1. 访问 https://github.com/new
-2. 仓库名称: `fridrich-of-ntu`
+2. 仓库名称: `nailong-museum`
 3. 选择 **Public**
 4. 点击 **Create repository**
 
@@ -28,22 +28,22 @@
 打开新的 CMD 或 PowerShell:
 
 ```bash
-cd e:\黑客松\fridrich-of-ntu-integrated
+cd F:\Lumia\Desktop\work\nailong-museum
 git init
 git add .
 git commit -m "Initial commit"
 git branch -M main
-git remote add origin https://github.com/你的用户名/fridrich-of-ntu.git
+git remote add origin https://github.com/lumia1998/nailong-museum.git
 git push -u origin main
 ```
 
-> 将 `你的用户名` 替换为你的GitHub用户名
+> 当前仓库地址为 `https://github.com/lumia1998/nailong-museum`。
 
 ### 第四步：部署到 Vercel
 
 1. 访问 https://vercel.com/new
 2. 登录后，点击 **Import Git Repository**
-3. 找到你的仓库 `fridrich-of-ntu`，点击 **Import**
+3. 找到你的仓库 `nailong-museum`，点击 **Import**
 4. Framework Preset 选择 **Other**
 5. 点击 **Deploy**
 6. 等待约30秒，部署完成！
@@ -52,7 +52,7 @@ git push -u origin main
 
 部署成功后，网站地址为:
 ```
-https://fridrich-of-ntu.vercel.app
+https://nailong-museum.vercel.app
 ```
 
 ---
@@ -62,7 +62,7 @@ https://fridrich-of-ntu.vercel.app
 修改代码后，在本地执行:
 
 ```bash
-cd e:\黑客松\fridrich-of-ntu-integrated
+cd F:\Lumia\Desktop\work\nailong-museum
 git add .
 git commit -m "更新描述"
 git push origin main

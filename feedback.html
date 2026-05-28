@@ -252,7 +252,8 @@
         // 下一题
         function nextQuestion() {
             var currentQuestion = parseInt(localStorage.getItem('currentQuestion') || '0');
-            var quizCount = parseInt(localStorage.getItem('quizCount') || '23');
+            var quizCount = parseInt(localStorage.getItem('quizCount') || paintingsData.length.toString());
+            quizCount = Math.min(quizCount, paintingsData.length);
             
             if (currentQuestion >= quizCount) {
                 window.location.href = 'complete.html';

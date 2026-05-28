@@ -47,16 +47,39 @@
                 —— 奶龙
             </p>
 
+            <div class="result-summary" id="resultSummary" style="display: none;">
+                <div class="result-rate">
+                    <span class="result-rate-number" id="accuracyText">0%</span>
+                    <span class="result-rate-label">正确率</span>
+                </div>
+                <div class="result-stat-list">
+                    <div class="result-stat-item">
+                        <span class="result-stat-value" id="finalScore">0</span>
+                        <span class="result-stat-label">答对</span>
+                    </div>
+                    <div class="result-stat-item">
+                        <span class="result-stat-value" id="finalTotal">0</span>
+                        <span class="result-stat-label">总题数</span>
+                    </div>
+                    <div class="result-stat-item">
+                        <span class="result-stat-value" id="wrongCount">0</span>
+                        <span class="result-stat-label">答错</span>
+                    </div>
+                </div>
+            </div>
+
             <button class="restart-btn" id="restartBtn" onclick="restartQuiz()" style="display: none;">
                 再来一次
             </button>
         </div>
     </main>
 
+    <script src="js/paintings-data.js"></script>
     <script>
         // 初始化
         function init() {
             const video = document.getElementById('passVideo');
+            renderResultStats();
 
             // 视频播放结束后显示文字
             video.onended = function() {
@@ -117,18 +140,44 @@
         function showFinalMessage() {
             document.getElementById('finalMessage').style.display = 'block';
             document.getElementById('finalQuote').style.display = 'block';
+            document.getElementById('resultSummary').style.display = 'block';
             document.getElementById('restartBtn').style.display = 'inline-block';
 
             // 添加淡入动画
             setTimeout(() => {
                 document.getElementById('finalMessage').style.opacity = '1';
+                document.getElementById('resultSummary').style.opacity = '1';
             }, 100);
+        }
+
+        // 渲染本次挑战统计
+        function renderResultStats() {
+            var maxQuestionCount = typeof paintingsData !== 'undefined' && Array.isArray(paintingsData)
+                ? paintingsData.length
+                : 20;
+            var savedQuizCount = parseInt(localStorage.getItem('quizCount') || maxQuestionCount.toString(), 10);
+            var total = Number.isFinite(savedQuizCount) ? savedQuizCount : maxQuestionCount;
+            total = Math.max(1, Math.min(total, maxQuestionCount));
+
+            var savedScore = parseInt(localStorage.getItem('score') || '0', 10);
+            var score = Number.isFinite(savedScore) ? savedScore : 0;
+            score = Math.max(0, Math.min(score, total));
+
+            var wrong = total - score;
+            var accuracy = Math.round((score / total) * 100);
+
+            document.getElementById('accuracyText').textContent = accuracy + '%';
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalTotal').textContent = total;
+            document.getElementById('wrongCount').textContent = wrong;
         }
 
         // 重新开始
         function restartQuiz() {
             localStorage.removeItem('currentQuestion');
             localStorage.removeItem('score');
+            localStorage.removeItem('quizCount');
+            localStorage.removeItem('answeredQuestions');
             localStorage.removeItem('lastAnswerCorrect');
             localStorage.removeItem('lastPainting');
             window.location.href = 'index.html';

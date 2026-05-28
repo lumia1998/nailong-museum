@@ -42,7 +42,7 @@
     <main class="container">
         <div class="quiz-container">
             <div class="progress-bar">
-                <span class="progress-text" id="progressText">第 1 / 23 题</span>
+                <span class="progress-text" id="progressText">第 1 / 20 题</span>
                 <span class="progress-score" id="progressScore">得分: 0</span>
             </div>
 
@@ -163,7 +163,8 @@ let currentQuestion = 0;
 
         // 加载题目
         function loadQuestion() {
-            var quizCount = parseInt(localStorage.getItem('quizCount') || '23');
+            var quizCount = parseInt(localStorage.getItem('quizCount') || paintingsData.length.toString());
+            quizCount = Math.min(quizCount, paintingsData.length);
             var painting = paintingsData[currentQuestion];
 
             // 更新进度
@@ -225,7 +226,8 @@ let currentQuestion = 0;
             }
 
             // 检查是否完成
-            var quizCount = parseInt(localStorage.getItem('quizCount') || '23');
+            var quizCount = parseInt(localStorage.getItem('quizCount') || paintingsData.length.toString());
+            quizCount = Math.min(quizCount, paintingsData.length);
             if (currentQuestion + 1 >= quizCount) {
                 window.location.href = 'complete.html';
             } else {
