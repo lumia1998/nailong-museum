@@ -53,12 +53,13 @@
                 <h3 class="original-title">🖼️ 原画欣赏</h3>
                 <div class="painting-comparison">
                     <div class="painting-item">
-                        <img id="nailongPainting" src="" alt="奶龙改编" class="comparison-img">
+                        <img id="nailongPainting" src="" alt="奶龙改编" class="comparison-img" loading="lazy" decoding="async">
                         <p class="painting-label">奶龙版</p>
                     </div>
                     <div class="painting-item">
-                        <img id="originalPainting" src="" alt="原画" class="comparison-img">
+                        <img id="originalPainting" src="" alt="原画" class="comparison-img" loading="lazy" decoding="async">
                         <p class="painting-label">原画</p>
+                        <p class="image-error" id="originalPaintingError" hidden>原画暂时无法显示</p>
                     </div>
                 </div>
             </div>
@@ -69,6 +70,7 @@
         </div>
     </main>
 
+    <script src="js/paintings-data.js"></script>
     <script>
         let isCorrect = false;
         let painting = null;
@@ -103,7 +105,7 @@
             }
             
             isCorrect = correctStr === 'true';
-            painting = JSON.parse(paintingStr);
+            painting = getPaintingWithOriginal(JSON.parse(paintingStr));
             
             // 播放对应视频
             const video = document.getElementById('feedbackVideo');
@@ -134,25 +136,44 @@
             loadOriginalPainting();
         }
         
+        // 合并题库中的原画字段，兼容已存在的旧答题进度。
+        function getPaintingWithOriginal(savedPainting) {
+            if (!savedPainting || typeof paintingsData === 'undefined') {
+                return savedPainting;
+            }
+
+            var matchedPainting = paintingsData.find(function(item) {
+                return item.id === savedPainting.id;
+            });
+
+            return matchedPainting ? Object.assign({}, matchedPainting, savedPainting) : savedPainting;
+        }
+
         // 加载原画
         function loadOriginalPainting() {
-            document.getElementById('nailongPainting').src = 'assets/images/' + painting.image;
-            // 使用 WikiArt 或其他来源的原画URL
-            var originalUrls = {
-                '《梅杜萨之筏》': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/JEAN_LOUIS_TH%C3%89ODORE_G%C3%89RICAULT_-_La_Balsa_de_la_Medusa_%28Museo_del_Louvre%2C_1818-19%29.jpg/800px-JEAN_LOUIS_TH%C3%89ODORE_G%C3%89RICAULT_-_La_Balsa_de_la_Medusa_%28Museo_del_Louvre%2C_1818-19%29.jpg',
-                '《夜间的露天咖啡座》': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Van_Gogh_-_Terrasse_des_Caf%C3%A9s_an_der_Place_du_Forum_in_Arles_am_Abend.jpeg/800px-Van_Gogh_-_Terrasse_des_Caf%C3%A9s_an_der_Place_du_Forum_in_Arles_am_Abend.jpeg',
-                '《向日葵》': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/800px-Vincent_Willem_van_Gogh_127.jpg',
-                '《蒙娜丽莎》': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/800px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg',
-                '《创造亚当》': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Creaci%C3%B3n_de_Ad%C3%A1m.jpg/800px-Creaci%C3%B3n_de_Ad%C3%A1m.jpg',
-                '《撑阳伞的女人》': 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Claude_Monet_-_Woman_with_a_Parasol_-_Madame_Monet_and_Her_Son_-_National_Gallery_of_Art.jpg'
-            };
-            var url = originalUrls[painting.title];
-            if (url) {
-                document.getElementById('originalPainting').src = url;
-                document.getElementById('originalPaintingSection').style.display = 'block';
-            } else {
+            var nailongPainting = document.getElementById('nailongPainting');
+            var originalPainting = document.getElementById('originalPainting');
+            var originalPaintingError = document.getElementById('originalPaintingError');
+
+            nailongPainting.src = 'assets/images/' + painting.image;
+            originalPaintingError.hidden = true;
+
+            if (!painting.originalImage) {
                 document.getElementById('originalPaintingSection').style.display = 'none';
+                return;
             }
+
+            originalPainting.onerror = function() {
+                originalPaintingError.hidden = false;
+                originalPainting.removeAttribute('src');
+            };
+
+            originalPainting.onload = function() {
+                originalPaintingError.hidden = true;
+            };
+
+            originalPainting.src = 'assets/images/originals/' + painting.originalImage;
+            document.getElementById('originalPaintingSection').style.display = 'block';
         }
         
         // 初始化音频

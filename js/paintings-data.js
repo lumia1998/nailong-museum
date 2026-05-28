@@ -3,6 +3,7 @@ const paintingsData = [
     {
         id: 1,
         image: "art1_001.jpg",
+        originalImage: "original_raft_medusa.jpg",
         title: "《梅杜萨之筏》",
         artist: "籍里柯",
         year: "1819",
@@ -12,6 +13,7 @@ const paintingsData = [
     {
         id: 2,
         image: "art1_004.jpg",
+        originalImage: "original_accolade.jpg",
         title: "《受封》",
         artist: "埃德蒙·布莱尔·莱顿",
         year: "1901",
@@ -21,6 +23,7 @@ const paintingsData = [
     {
         id: 3,
         image: "art1_007.jpg",
+        originalImage: "original_cafe_terrace.jpg",
         title: "《夜间的露天咖啡座》",
         artist: "梵高",
         year: "1888",
@@ -30,6 +33,7 @@ const paintingsData = [
     {
         id: 4,
         image: "art1_010.jpg",
+        originalImage: "original_sunflowers.jpg",
         title: "《向日葵》",
         artist: "梵高",
         year: "1888",
@@ -39,6 +43,7 @@ const paintingsData = [
     {
         id: 5,
         image: "art1_013.jpg",
+        originalImage: "original_mona_lisa.jpg",
         title: "《蒙娜丽莎》",
         artist: "达芬奇",
         year: "1503",
@@ -48,6 +53,7 @@ const paintingsData = [
     {
         id: 6,
         image: "art1_006.jpg",
+        originalImage: "original_woman_parasol.jpg",
         title: "《撑阳伞的女人》",
         artist: "莫奈",
         year: "1875",
@@ -57,6 +63,7 @@ const paintingsData = [
     {
         id: 7,
         image: "art1_012.jpg",
+        originalImage: "original_creation_adam.jpg",
         title: "《创造亚当》",
         artist: "米开朗基罗",
         year: "1512",
@@ -66,6 +73,7 @@ const paintingsData = [
     {
         id: 8,
         image: "art1_015.jpg",
+        originalImage: "original_dance.jpg",
         title: "《舞蹈》",
         artist: "马蒂斯",
         year: "1910",
@@ -75,6 +83,7 @@ const paintingsData = [
     {
         id: 9,
         image: "art2_003.jpg",
+        originalImage: "original_philosopher_meditation.jpg",
         title: "《哲学家在冥想》",
         artist: "伦勃朗",
         year: "1632",
@@ -84,6 +93,7 @@ const paintingsData = [
     {
         id: 10,
         image: "art2_005.jpg",
+        originalImage: "original_accolade.jpg",
         title: "《受封》",
         artist: "埃德蒙·布莱尔·莱顿",
         year: "1901",
@@ -93,6 +103,7 @@ const paintingsData = [
     {
         id: 11,
         image: "art2_004.jpg",
+        originalImage: "original_gleaners.jpg",
         title: "《拾穗者》",
         artist: "米勒",
         year: "1857",
@@ -102,6 +113,7 @@ const paintingsData = [
     {
         id: 12,
         image: "art2_007.jpg",
+        originalImage: "original_starry_night.jpg",
         title: "《星月夜》",
         artist: "梵高",
         year: "1889",
@@ -111,6 +123,7 @@ const paintingsData = [
     {
         id: 13,
         image: "art2_008.jpg",
+        originalImage: "original_scream.jpg",
         title: "《呐喊》",
         artist: "蒙克",
         year: "1893",
@@ -120,6 +133,7 @@ const paintingsData = [
     {
         id: 14,
         image: "art3_001.jpg",
+        originalImage: "original_paradise_lost.jpg",
         title: "《失乐园》",
         artist: "古斯塔夫·多雷",
         year: "1866",
@@ -129,6 +143,7 @@ const paintingsData = [
     {
         id: 15,
         image: "art3_002.jpg",
+        originalImage: "original_baptism_christ.jpg",
         title: "《基督受洗》",
         artist: "韦罗基奥&达芬奇",
         year: "1475",
@@ -138,6 +153,7 @@ const paintingsData = [
     {
         id: 16,
         image: "art3_003.jpg",
+        originalImage: "original_scream.jpg",
         title: "《呐喊》",
         artist: "蒙克",
         year: "1893",
@@ -147,6 +163,7 @@ const paintingsData = [
     {
         id: 17,
         image: "art3_005.jpg",
+        originalImage: "original_accolade.jpg",
         title: "《受封》",
         artist: "埃德蒙·布莱尔·莱顿",
         year: "1901",
@@ -156,6 +173,7 @@ const paintingsData = [
     {
         id: 18,
         image: "art4_001.jpg",
+        originalImage: "original_kiss_judas.jpg",
         title: "《犹大之吻》",
         artist: "乔托",
         year: "1305",
@@ -165,6 +183,7 @@ const paintingsData = [
     {
         id: 19,
         image: "art4_002.jpg",
+        originalImage: "original_madonna_harpies.jpg",
         title: "《哈勒姆的圣母》",
         artist: "安德烈亚·德尔·萨尔托",
         year: "1517",
@@ -174,6 +193,7 @@ const paintingsData = [
     {
         id: 20,
         image: "art4_005.jpg",
+        originalImage: "original_swing.jpg",
         title: "《秋千》",
         artist: "弗拉戈纳尔",
         year: "1767",
@@ -183,6 +203,7 @@ const paintingsData = [
     {
         id: 21,
         image: "art4_006.jpg",
+        originalImage: "original_arnolfini.jpg",
         title: "《阿尔诺芬尼夫妇像》",
         artist: "扬·凡·艾克",
         year: "1434",
@@ -192,6 +213,7 @@ const paintingsData = [
     {
         id: 22,
         image: "art4_007.jpg",
+        originalImage: "original_dr_gachet.jpg",
         title: "《加歇医生像》",
         artist: "梵高",
         year: "1890",
@@ -201,6 +223,7 @@ const paintingsData = [
     {
         id: 23,
         image: "art4_008.jpg",
+        originalImage: "original_boating_party.jpg",
         title: "《船上的午宴》",
         artist: "雷诺阿",
         year: "1881",

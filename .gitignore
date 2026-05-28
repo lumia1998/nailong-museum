@@ -2,5 +2,7 @@
 /node_modules
 /.git
 *.log
+feedback-check.png
+test-results/
 .DS_Store
 Thumbs.db

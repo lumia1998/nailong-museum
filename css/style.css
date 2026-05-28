@@ -1071,16 +1071,29 @@ body:-moz-full-screen {
 .comparison-img {
     width: 200px;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 10px;
     border: 2px solid var(--antique-gold);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.35);
 }
 
 .painting-label {
     margin-top: 0.5rem;
     color: var(--cream);
     font-size: 0.9rem;
+}
+
+.image-error {
+    width: 200px;
+    min-height: 2.5rem;
+    margin-top: 0.6rem;
+    padding: 0.6rem;
+    border: 1px solid rgba(255, 182, 193, 0.45);
+    border-radius: 8px;
+    color: #FFB6C1;
+    background: rgba(255, 0, 0, 0.12);
+    font-size: 0.85rem;
 }
 
 /* ===== 加载动画 ===== */
@@ -1297,11 +1310,11 @@ body:-moz-full-screen {
 }
 
 /* 图片懒加载样式 */
-img[loading="lazy"] {
+img[data-src] {
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-img[loading="lazy"].loaded {
+img[data-src].loaded {
     opacity: 1;
 }
